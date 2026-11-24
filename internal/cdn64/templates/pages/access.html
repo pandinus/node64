@@ -8,7 +8,7 @@
 	{{range $d.Tabs}}<li class="nav-item"><a class="nav-link{{if .Active}} active{{end}}" href="{{.Path}}"><i class="bi {{.Icon}}"></i> {{$.T .TitleKey}}</a></li>{{end}}
 </ul>
 <div class="row g-3 mb-3">
-<div class="col-lg-5">
+<div class="col-12">
 <form method="post" action="/cdn64/access/lists" class="card h-100" id="freigabeliste">
 	<input type="hidden" name="_csrf" value="{{.CSRF}}">
 	<div class="card-header d-flex flex-wrap align-items-center gap-2">
@@ -23,7 +23,7 @@
 	<div class="card-footer"><button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-check2"></i> {{.T "common.save"}}</button></div>
 </form>
 </div>
-<div class="col-lg-7">
+<div class="col-12">
 <form method="post" action="/cdn64/access/lists" class="card h-100" id="sperrliste">
 	<input type="hidden" name="_csrf" value="{{.CSRF}}">
 	<div class="card-header d-flex flex-wrap align-items-center gap-2">

@@ -150,7 +150,7 @@ func (m *Module) pageNewCA(w http.ResponseWriter, r *http.Request) {
 	if err := m.renewCA(ctx); err != nil {
 		m.log.Error("dns64 new home CA failed", "err", err)
 		m.g.Flash(w, r, "danger", m.g.T(r, "dns64.enc.newca_failed", "err", err.Error()))
-		http.Redirect(w, r, "/dns64/encrypted", http.StatusSeeOther)
+		http.Redirect(w, r, "/dns64/encrypted#tab-enc-devices", http.StatusSeeOther)
 		return
 	}
 	m.log.Info("dns64 new home CA created", "by", m.g.Actor(r))
@@ -160,7 +160,7 @@ func (m *Module) pageNewCA(w http.ResponseWriter, r *http.Request) {
 	} else {
 		m.g.Flash(w, r, "success", m.g.T(r, "dns64.enc.newca_done"))
 	}
-	http.Redirect(w, r, "/dns64/encrypted", http.StatusSeeOther)
+	http.Redirect(w, r, "/dns64/encrypted#tab-enc-devices", http.StatusSeeOther)
 }
 
 // caDER liefert die Heimnetz-CA (nil, wenn es keine gibt).

@@ -44,7 +44,11 @@ func (m *Module) forwardBack(w http.ResponseWriter, r *http.Request, err error, 
 	} else if okKey != "" {
 		m.g.Flash(w, r, "success", m.g.T(r, okKey))
 	}
-	http.Redirect(w, r, "/dns64/local/forwards", http.StatusSeeOther)
+	target := "/dns64/local/forwards"
+	if strings.HasPrefix(r.URL.Path, "/dns64/rewrites") {
+		target += "#tab-rw" // Unter-Reiter Umschreiben
+	}
+	http.Redirect(w, r, target, http.StatusSeeOther)
 }
 
 func onOff(on bool) string { return map[bool]string{true: "enable", false: "disable"}[on] }

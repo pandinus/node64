@@ -28,7 +28,13 @@
 	<div class="small mt-1 text-body-secondary">{{.T "dns64.pub.host"}}</div></div>{{end}}
 <script type="application/json" id="dns64-data">{{$d.JS}}</script>
 <div class="row g-3">
-	<div class="col-xl-6">
+	<div class="col-12">
+	<ul class="nav nav-pills flex-wrap gap-1 mb-3" data-subtabs>
+		<li class="nav-item"><a class="nav-link active" href="#tab-general" data-pane="tab-general"><i class="bi bi-gear"></i> {{.T "dns64.settings.general"}}</a></li>
+		<li class="nav-item"><a class="nav-link" href="#tab-upstreams" data-pane="tab-upstreams"><i class="bi bi-cloud-arrow-up"></i> {{.T "dns64.up.title"}}</a></li>
+		<li class="nav-item"><a class="nav-link" href="#tab-router" data-pane="tab-router"><i class="bi bi-router"></i> {{.T "dns64.setup.title"}}</a></li>
+	</ul>
+	<div class="subtab-pane d-flex flex-column gap-3" id="tab-general">
 		<div class="card">
 			<div class="card-header"><i class="bi bi-gear text-primary"></i> {{.T "dns64.settings.general"}}{{.Doc "dns64#netzwerk-und-ports"}}</div>
 			<div class="card-body">
@@ -107,16 +113,8 @@
 				</form>
 			</div>
 		</div>
-		<div class="card mt-3">
-			<div class="card-header"><i class="bi bi-info-circle text-info"></i> {{.T "dns64.setup.title"}}{{.Doc "dns64#router"}}</div>
-			<div class="card-body small">
-				<p>{{.T "dns64.setup.router"}}</p>
-				<p>{{.T "dns64.setup.docker"}}</p>
-				<p class="mb-0 text-body-secondary">{{.T "dns64.setup.later"}}</p>
-			</div>
-		</div>
 	</div>
-	<div class="col-xl-6">
+	<div class="subtab-pane d-flex flex-column gap-3" id="tab-upstreams">
 		<div class="card" id="upstreams">
 			<div class="card-header"><i class="bi bi-cloud-arrow-up text-info"></i> {{.T "dns64.up.title"}}{{.Doc "dns64#upstreams"}}</div>
 			<form method="post" action="/dns64/upstreams">
@@ -149,7 +147,7 @@
 				</div>
 			</form>
 		</div>
-		<div class="card mt-3">
+		<div class="card">
 			<div class="card-header"><i class="bi bi-plus-circle text-primary"></i> {{.T "dns64.settings.up_add"}}{{.Doc "dns64#eigener-upstream"}}</div>
 			<div class="card-body">
 				<form method="post" action="/dns64/upstreams/add" class="row g-2">
@@ -162,6 +160,17 @@
 				</form>
 			</div>
 		</div>
+	</div>
+	<div class="subtab-pane d-flex flex-column gap-3" id="tab-router">
+		<div class="card">
+			<div class="card-header"><i class="bi bi-info-circle text-info"></i> {{.T "dns64.setup.title"}}{{.Doc "dns64#router"}}</div>
+			<div class="card-body small">
+				<p>{{.T "dns64.setup.router"}}</p>
+				<p>{{.T "dns64.setup.docker"}}</p>
+				<p class="mb-0 text-body-secondary">{{.T "dns64.setup.later"}}</p>
+			</div>
+		</div>
+	</div>
 	</div>
 </div>
 {{end}}

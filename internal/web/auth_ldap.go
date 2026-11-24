@@ -26,7 +26,7 @@ import (
 // uebernommen. Nur lokal fuer Node64 (kein Bezug zu ipv64.net).
 
 // ldapBack: Reiter „Anmeldung“ der Benutzerverwaltung.
-const ldapBack = "/settings/users#login"
+const ldapBack = "/settings/users#ldap" // Unter-Reiter LDAP (lokaler Build)
 
 func (s *Server) ldapRoutes() {
 	s.mux.Handle("POST /settings/users/ldap", s.auth(s.ldapSettingsSave))
@@ -730,7 +730,7 @@ func (s *Server) oidcGroupsSave(w http.ResponseWriter, r *http.Request) {
 	}
 	if !oidcClaimOK(claim) {
 		s.flash(w, r, "danger", v.T("ldap.err_claim"))
-		http.Redirect(w, r, ldapBack, http.StatusSeeOther)
+		http.Redirect(w, r, "/settings/users#oidc-groups", http.StatusSeeOther)
 		return
 	}
 	on := f["jit"] == "1"
@@ -740,7 +740,7 @@ func (s *Server) oidcGroupsSave(w http.ResponseWriter, r *http.Request) {
 	}
 	s.audit(r, "auth.oidc.groups", claim, "jit="+strconv.FormatBool(on))
 	s.flash(w, r, "success", v.T("ldap.oidc_saved"))
-	http.Redirect(w, r, ldapBack, http.StatusSeeOther)
+	http.Redirect(w, r, "/settings/users#oidc-groups", http.StatusSeeOther)
 }
 
 // ---------------------------------------------------------------- Karte (Reiter „Anmeldung“)

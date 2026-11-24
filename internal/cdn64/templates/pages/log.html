@@ -20,7 +20,7 @@
 </div>
 {{end}}
 <div class="row g-3">
-	<div class="col-xl-9">
+	<div class="col-12">
 		<div class="card">
 			<div class="card-header">
 				<form method="get" action="/cdn64/log" class="row g-2 align-items-center">
@@ -59,7 +59,7 @@
 			{{end}}
 		</div>
 	</div>
-	<div class="col-xl-3">
+	<div class="col-12">
 		<form method="post" action="/cdn64/log/settings" class="card">
 			<input type="hidden" name="_csrf" value="{{.CSRF}}">
 			<div class="card-header"><i class="bi bi-sliders text-primary"></i> {{.T "cdn64.log.settings"}}{{$.Doc "cdn64#statistik"}}</div>

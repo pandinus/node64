@@ -28,7 +28,13 @@
 <script type="application/json" id="dns64-data">{{$d.JS}}</script>
 {{$e := $d.Enc}}
 <div class="row g-3">
-	<div class="col-xl-6">
+	<div class="col-12">
+	<ul class="nav nav-pills flex-wrap gap-1 mb-3" data-subtabs>
+		<li class="nav-item"><a class="nav-link active" href="#tab-enc-setup" data-pane="tab-enc-setup"><i class="bi bi-lock"></i> {{.T "dns64.enc.title"}}</a></li>
+		<li class="nav-item"><a class="nav-link" href="#tab-enc-acme" data-pane="tab-enc-acme"><i class="bi bi-patch-check"></i> {{.T "dns64.acme.title"}}</a></li>
+		<li class="nav-item"><a class="nav-link" href="#tab-enc-devices" data-pane="tab-enc-devices"><i class="bi bi-phone"></i> {{.T "dns64.enc.devices"}}</a></li>
+	</ul>
+	<div class="subtab-pane d-flex flex-column gap-3" id="tab-enc-setup">
 		<div class="card">
 			<div class="card-header"><i class="bi bi-lock text-success"></i> {{.T "dns64.enc.title"}}{{.Doc "dns64#verschluesselung"}}</div>
 			<div class="card-body">
@@ -82,7 +88,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-xl-6 d-flex flex-column gap-3">
+	<div class="subtab-pane d-flex flex-column gap-3" id="tab-enc-acme">
 		<div class="card" id="acme">
 			<div class="card-header"><i class="bi bi-patch-check text-success"></i> {{.T "dns64.acme.title"}}{{.Doc "dns64#zertifikat"}}</div>
 			<div class="card-body small">
@@ -92,6 +98,8 @@
 				<a class="btn btn-sm btn-outline-primary" href="/certificates"><i class="bi bi-shield-lock"></i> {{.T "dns64.enc.cert_manage"}}</a>
 			</div>
 		</div>
+	</div>
+	<div class="subtab-pane d-flex flex-column gap-3" id="tab-enc-devices">
 		<div class="card">
 			<div class="card-header"><i class="bi bi-phone text-primary"></i> {{.T "dns64.enc.devices"}}{{.Doc "dns64#apple-profil"}}</div>
 			<div class="card-body small">
@@ -121,6 +129,7 @@
 				{{if $e.Names}}<div class="text-body-secondary">{{.T "dns64.enc.cert_names"}} <span class="font-monospace">{{range $i, $n := $e.Names}}{{if $i}}, {{end}}{{$n}}{{end}}</span>{{if not $e.NotAfter.IsZero}} · {{.T "dns64.enc.valid_until" "date" (.Date $e.NotAfter)}}{{end}}</div>{{end}}
 			</div>
 		</div>
+	</div>
 	</div>
 </div>
 {{end}}

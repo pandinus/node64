@@ -13,7 +13,7 @@ import (
 	"github.com/miekg/dns"
 )
 
-// Unterpunkt "Lokaler DNS" (/dns64/local): Zonen links, ihre Eintraege rechts, Zonendatei (BIND-Format) je Zone.
+// Unterpunkt "Lokaler DNS": Eintraege (/dns64/local, Filter je Zone), Zonen (/dns64/local/zones), Zonendatei (BIND-Format) je Zone.
 
 // zoneOfName: die laengste Zone, zu der name gehoert ("" = keine).
 func zoneOfName(zones []Zone, name string) string {
@@ -27,8 +27,9 @@ func zoneOfName(zones []Zone, name string) string {
 	return best
 }
 
-// localView fuellt die Seite: Zonen mit Zaehlern, gewaehlte Zone (?zone=, sonst die erste), ihre Eintraege.
-func (m *Module) localView(r *http.Request, d *pageData) error {
+// localView fuellt die Seiten: Zonen mit Zaehlern, gewaehlte Zone (?zone=), ihre Eintraege.
+// Ohne ?zone= zeigt der Reiter Eintraege alle, der Reiter Zonen die erste Zone.
+func (m *Module) localView(r *http.Request, d *pageData, zonesTab bool) error {
 	ctx := r.Context()
 	recs, err := m.Records(ctx)
 	if err != nil {
@@ -51,7 +52,7 @@ func (m *Module) localView(r *http.Request, d *pageData) error {
 	d.Sel = r.URL.Query().Get("zone")
 	if d.Sel == "" {
 		d.Sel = "*"
-		if len(d.Zones) > 0 {
+		if zonesTab && len(d.Zones) > 0 {
 			d.Sel = d.Zones[0].Name
 		}
 	}
@@ -73,6 +74,9 @@ func (m *Module) localView(r *http.Request, d *pageData) error {
 		}
 	}
 	d.Back = "/dns64/local?zone=" + d.Sel
+	if zonesTab {
+		d.Back = "/dns64/local/zones?zone=" + d.Sel
+	}
 	return nil
 }
 

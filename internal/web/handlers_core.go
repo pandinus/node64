@@ -577,7 +577,7 @@ func (s *Server) settingsUpdates(w http.ResponseWriter, r *http.Request) {
 	s.audit(r, "settings.updates", "", fmt.Sprintf("mode=%s", mode))
 	v := s.view(r, "settings.title")
 	s.flash(w, r, "success", v.T("common.saved"))
-	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+	http.Redirect(w, r, "/settings/about", http.StatusSeeOther)
 }
 
 func (s *Server) settingsNode(w http.ResponseWriter, r *http.Request) {

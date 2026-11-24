@@ -6,6 +6,10 @@
 	var show = function () {
 		var id = location.hash.replace(/[^a-z]/gi, "");
 		var b = id && tabs.querySelector('[data-bs-target="#' + id + '"]');
+		if (!b && id) { // Sprungmarke einer Karte (z. B. #ldap): den Reiter zeigen, in dem sie steht
+			var el = document.getElementById(decodeURIComponent(location.hash.slice(1))) || document.getElementById(id), pane = el && el.closest(".tab-pane");
+			b = pane && tabs.querySelector('[data-bs-target="#' + pane.id + '"]');
+		}
 		if (b) { bootstrap.Tab.getOrCreateInstance(b).show(); }
 	};
 	show();

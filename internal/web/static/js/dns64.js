@@ -704,17 +704,20 @@
 		});
 	}
 
-	if (kind === "lists" && $("allow-form")) {
-		$("allow-form").addEventListener("submit", function (e) {
-			e.preventDefault();
-			var v = $("allow-input").value.trim().toLowerCase();
-			if (!v) { return; }
-			api("allowlist", { method: "POST", body: { domain: v } }).then(function (r) {
-				$("allow-input").value = "";
-				toast(t("released_toast", { domain: r.domain }));
-				return loadAllow();
-			}).catch(function (err) { toast(t("error") + ": " + err.message); });
-		});
+	// Reiter Blocklisten (deny-form) und Freigaben (allow-form): je nur eines der Formulare vorhanden
+	if (kind === "lists" && ($("allow-form") || $("deny-form"))) {
+		if ($("allow-form")) {
+			$("allow-form").addEventListener("submit", function (e) {
+				e.preventDefault();
+				var v = $("allow-input").value.trim().toLowerCase();
+				if (!v) { return; }
+				api("allowlist", { method: "POST", body: { domain: v } }).then(function (r) {
+					$("allow-input").value = "";
+					toast(t("released_toast", { domain: r.domain }));
+					return loadAllow();
+				}).catch(function (err) { toast(t("error") + ": " + err.message); });
+			});
+		}
 		if ($("deny-form")) {
 			$("deny-form").addEventListener("submit", function (e) {
 				e.preventDefault();
@@ -836,6 +839,13 @@
 				$("rec-count").textContent = nf.format(n);
 			});
 		}
+	}
+
+	// Reiter Zonen: TSIG-Geheimnis anzeigen
+	if (kind === "zones") {
+		document.querySelectorAll("[data-reveal]").forEach(function (b) {
+			b.addEventListener("click", function () { var f = $(b.getAttribute("data-reveal")); f.type = f.type === "password" ? "text" : "password"; });
+		});
 	}
 
 	// Weiterleitungen, Umschreiben und lokale Zonen: Bearbeiten im Formular der Karte, Testabfrage je Weiterleitung

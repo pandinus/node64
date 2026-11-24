@@ -7,7 +7,7 @@
 	{{range $d.Tabs}}<li class="nav-item"><a class="nav-link{{if .Active}} active{{end}}" href="{{.Path}}"><i class="bi {{.Icon}}"></i> {{$.T .TitleKey}}</a></li>{{end}}
 </ul>
 <div class="row g-3">
-	<div class="col-xl-8">
+	<div class="col-12">
 		<form method="post" action="/cdn64/default" class="card">
 			<input type="hidden" name="_csrf" value="{{.CSRF}}">
 			<div class="card-header"><i class="bi bi-question-square text-primary"></i> {{.T "cdn64.default.title"}}</div>

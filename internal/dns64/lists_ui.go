@@ -72,7 +72,7 @@ func (m *Module) pageAllowListsSave(w http.ResponseWriter, r *http.Request) {
 			c.AllowLst[i].Enabled = on
 		}
 	}
-	m.apply(w, r, "/dns64/lists#freigabe-listen", c, "dns64.allowlists", "")
+	m.apply(w, r, "/dns64/lists/allow#freigabe-listen", c, "dns64.allowlists", "")
 }
 
 func (m *Module) pageAllowListAdd(w http.ResponseWriter, r *http.Request) {
@@ -83,7 +83,7 @@ func (m *Module) pageAllowListAdd(w http.ResponseWriter, r *http.Request) {
 func (m *Module) pageListAddKind(w http.ResponseWriter, r *http.Request, allow bool) {
 	back, kind := "/dns64/lists", "dns64.list.add"
 	if allow {
-		back, kind = "/dns64/lists#freigabe-listen", "dns64.allowlists.add"
+		back, kind = "/dns64/lists/allow#freigabe-listen", "dns64.allowlists.add"
 	}
 	c := m.loadConfig(r.Context())
 	lines := strings.Split(r.PostFormValue("urls"), "\n")
@@ -141,7 +141,7 @@ func (m *Module) pageAllowListRemove(w http.ResponseWriter, r *http.Request) {
 		url = c.AllowLst[i].URL
 		c.AllowLst = append(c.AllowLst[:i], c.AllowLst[i+1:]...)
 	}
-	m.apply(w, r, "/dns64/lists#freigabe-listen", c, "dns64.allowlists.remove", url)
+	m.apply(w, r, "/dns64/lists/allow#freigabe-listen", c, "dns64.allowlists.remove", url)
 }
 
 // replaceDeny setzt die eigene Sperrliste auf die Zeilen des Textfelds; wie beim Sperren einzelner Domains faellt

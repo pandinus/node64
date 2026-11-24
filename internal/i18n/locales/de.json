@@ -116,6 +116,7 @@
     "settings_account": "Mein Konto",
     "settings_ports": "Ports",
     "settings_data": "Daten & Sicherung",
+    "settings_about": "Über",
     "settings_modules": "Module",
     "useradmin": "Benutzerverwaltung"
   },
@@ -4114,9 +4115,12 @@
       "groups": "Gruppen",
       "overview": "Übersicht",
       "log": "Abfrage-Log",
-      "lists": "Freigaben & Blocklisten",
+      "lists": "Blocklisten",
+      "allowlists": "Freigaben",
+      "filter": "Filter",
       "settings": "Einstellungen",
       "records": "Eigene Einträge",
+      "local_records": "Lokale DNS-Einträge",
       "encrypted": "Verschlüsselung"
     },
     "log": {

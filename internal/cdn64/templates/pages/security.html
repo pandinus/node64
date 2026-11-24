@@ -6,9 +6,15 @@
 <ul class="nav nav-tabs mb-3">
 	{{range $d.Tabs}}<li class="nav-item"><a class="nav-link{{if .Active}} active{{end}}" href="{{.Path}}"><i class="bi {{.Icon}}"></i> {{$.T .TitleKey}}</a></li>{{end}}
 </ul>
-<p class="small text-body-secondary">{{.T "cdn64.sec.hint"}}</p>
 <div class="row g-3 mb-3">
-<div class="col-lg-6">
+<div class="col-12">
+<ul class="nav nav-pills flex-wrap gap-1 mb-3" data-subtabs>
+	<li class="nav-item"><a class="nav-link active" href="#tab-bl" data-pane="tab-bl"><i class="bi bi-shield-x"></i> {{.T "cdn64.bl.title"}}</a></li>
+	<li class="nav-item"><a class="nav-link" href="#tab-limits" data-pane="tab-limits"><i class="bi bi-speedometer2"></i> {{.T "cdn64.lim.title"}}</a></li>
+	{{if $d.HP}}<li class="nav-item"><a class="nav-link" href="#tab-hp" data-pane="tab-hp"><i class="bi bi-bug"></i> {{.T "cdn64.hp.title"}}</a></li>{{end}}
+</ul>
+<p class="small text-body-secondary">{{.T "cdn64.sec.hint"}}</p>
+<div class="subtab-pane d-flex flex-column gap-3" id="tab-bl">
 <form method="post" action="/cdn64/blocklists" class="card h-100" id="blocklists">
 	<input type="hidden" name="_csrf" value="{{.CSRF}}">
 	<div class="card-header d-flex flex-wrap align-items-center gap-2">
@@ -48,7 +54,7 @@
 </form>
 <form method="post" action="/cdn64/blocklists/token/delete" id="bl-token-delete" class="d-none"><input type="hidden" name="_csrf" value="{{.CSRF}}"></form>
 </div>
-<div class="col-lg-6">
+<div class="subtab-pane d-flex flex-column gap-3" id="tab-limits">
 <form method="post" action="/cdn64/limits" class="card" id="limits">
 	<input type="hidden" name="_csrf" value="{{.CSRF}}">
 	<div class="card-header d-flex flex-wrap align-items-center gap-2">
@@ -98,8 +104,9 @@
 		<button class="btn btn-outline-secondary btn-sm" type="submit" name="reset" value="1" data-confirm="{{.T "cdn64.lim.reset_confirm"}}"><i class="bi bi-arrow-counterclockwise"></i> {{.T "cdn64.lim.reset"}}</button>
 	</div>
 </form>
-{{with $d.HP}}
-<form method="post" action="/cdn64/honeypot" class="card mt-3" id="honeypot">
+</div>
+{{with $d.HP}}<div class="subtab-pane d-flex flex-column gap-3" id="tab-hp">
+<form method="post" action="/cdn64/honeypot" class="card" id="honeypot">
 	<input type="hidden" name="_csrf" value="{{$.CSRF}}">
 	<div class="card-header d-flex flex-wrap align-items-center gap-2">
 		<span><i class="bi bi-bug text-primary"></i> {{$.T "cdn64.hp.title"}}{{$.Doc "cdn64#honeypot"}}</span>
@@ -141,7 +148,7 @@
 	</div>
 	<div class="card-footer"><button class="btn btn-primary btn-sm" type="submit"><i class="bi bi-check2"></i> {{$.T "common.save"}}</button></div>
 </form>
-{{end}}
+</div>{{end}}
 </div>
 </div>
 {{end}}

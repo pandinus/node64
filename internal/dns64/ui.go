@@ -34,7 +34,9 @@ func (m *Module) uiRoutes(mux *http.ServeMux, g module.Guards) {
 	mux.Handle("GET /dns64/log", page(m.pageTab("log", "dns64.log.title")))
 	mux.Handle("GET /dns64/top", page(m.pageTab("top", "dns64.top.title"))) // vollstaendige Top-Listen (aus der Uebersicht)
 	mux.Handle("GET /dns64/lists", page(m.pageTab("lists", "dns64.lists.title")))
+	mux.Handle("GET /dns64/lists/allow", page(m.pageTab("allow", "dns64.tab.allowlists")))
 	mux.Handle("GET /dns64/local", page(m.pageTab("local", "dns64.local.title")))
+	mux.Handle("GET /dns64/local/zones", page(m.pageTab("zones", "dns64.local.title")))
 	mux.Handle("GET /dns64/records", page(redirectTo("/dns64/local"))) // alte Adresse
 	mux.Handle("GET /dns64/encrypted", page(m.pageTab("encrypted", "dns64.enc.title")))
 	mux.Handle("POST /dns64/encrypted", page(m.pageEncryptedSave))
@@ -111,25 +113,27 @@ type pageData struct {
 }
 
 var tabs = []tab{{"overview", "/dns64", "dns64.tab.overview", "bi-speedometer2", false}, {"log", "/dns64/log", "dns64.tab.log", "bi-list-ul", false},
-	{"lists", "/dns64/lists", "dns64.tab.lists", "bi-funnel", false},
+	{"lists", "/dns64/lists", "dns64.tab.filter", "bi-funnel", false}, // Unter-Reiter Blocklisten / Freigaben
 	{"groups", "/dns64/groups", "dns64.tab.groups", "bi-people", false},
 	{"encrypted", "/dns64/encrypted", "dns64.tab.encrypted", "bi-lock", false}, {"settings", "/dns64/settings", "dns64.tab.settings", "bi-gear", false}}
 
-// localTabs: Reiter des Unterpunkts "Lokaler DNS" (Zonen mit Eintraegen, Weiterleitungen mit Umschreiben).
-var localTabs = []tab{{"local", "/dns64/local", "dns64.tab.zones", "bi-diagram-3", false}, {"forwards", "/dns64/local/forwards", "dns64.tab.forwards", "bi-signpost-2", false}}
+// localTabs: Reiter des Unterpunkts "Lokaler DNS" (Eintraege, Zonen, Weiterleitungen mit Umschreiben).
+var localTabs = []tab{{"local", "/dns64/local", "dns64.tab.local_records", "bi-signpost-split", false},
+	{"zones", "/dns64/local/zones", "dns64.tab.zones", "bi-diagram-3", false},
+	{"forwards", "/dns64/local/forwards", "dns64.tab.forwards", "bi-signpost-2", false}}
 
 func (m *Module) pageTab(key, titleKey string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		d := pageData{Cfg: m.loadConfig(ctx), Hours: listHours, Types: recordTypes}
 		set := tabs
-		if key == "local" || key == "forwards" {
+		if key == "local" || key == "zones" || key == "forwards" {
 			set = localTabs
 		} else if key == "dhcp" { // eigener Menuepunkt ohne Reiter
 			set = nil
 		}
 		for _, t := range set {
-			t.Active = t.Key == key || (key == "top" && t.Key == "overview")
+			t.Active = t.Key == key || (key == "top" && t.Key == "overview") || (key == "allow" && t.Key == "lists")
 			d.Tabs = append(d.Tabs, t)
 		}
 		if e := m.running(); e != nil {
@@ -173,8 +177,8 @@ func (m *Module) pageTab(key, titleKey string) http.HandlerFunc {
 				m.g.Flash(w, r, "danger", err.Error())
 			}
 		}
-		if key == "local" {
-			if err := m.localView(r, &d); err != nil {
+		if key == "local" || key == "zones" {
+			if err := m.localView(r, &d, key == "zones"); err != nil {
 				m.g.Flash(w, r, "danger", err.Error())
 			}
 		}
@@ -430,7 +434,7 @@ func (m *Module) pageAllowImport(w http.ResponseWriter, r *http.Request) {
 		m.log.Info("allowlist imported", "domains", n, "invalid", bad, "by", m.g.Actor(r))
 		m.g.Flash(w, r, "success", m.g.T(r, "dns64.allow.imported", "n", n, "bad", bad))
 	}
-	http.Redirect(w, r, "/dns64/lists", http.StatusSeeOther)
+	http.Redirect(w, r, "/dns64/lists/allow", http.StatusSeeOther)
 }
 
 func (m *Module) recordBack(w http.ResponseWriter, r *http.Request, err error, okKey string) {

@@ -24,12 +24,14 @@ func (s *Server) settingsPageRoutes() {
 	s.mux.Handle("GET /settings/modules", s.auth(s.settingsModulesPage))
 	s.mux.Handle("GET /settings/ports", s.auth(s.settingsPortsPage))
 	s.mux.Handle("GET /settings/data", s.auth(s.settingsDataPage))
+	s.mux.Handle("GET /settings/about", s.auth(s.settingsAboutPage))
 	s.mux.Handle("POST /settings/reach", s.auth(s.settingsReach))
 }
 
 // settingsMoved: alte Sprungmarken auf /settings und ihr neuer Ort (app.js leitet weiter; der Server sieht #… nicht).
 var settingsMoved = map[string]string{
 	"modules": "/settings/modules",
+	"about":   "/settings/about",
 	"ports":   "/settings/ports",
 	"edge":    "/settings/ports#edge",
 	"data":    "/settings/data#retention",
@@ -73,6 +75,15 @@ func (s *Server) settingsDataPage(w http.ResponseWriter, r *http.Request) {
 	v := s.settingsView(r)
 	v.Title = v.T("settings.data_page")
 	s.render(w, r, http.StatusOK, "settings_data", v)
+}
+
+// ---------------------------------------------------------------- Ueber
+
+// settingsAboutPage: Version, Datenbank, Sicherungen und Updates (eigener Reiter, vorher Karte auf Allgemein).
+func (s *Server) settingsAboutPage(w http.ResponseWriter, r *http.Request) {
+	v := s.settingsView(r)
+	v.Title = v.T("nav.settings_about")
+	s.render(w, r, http.StatusOK, "settings_about", v)
 }
 
 // ---------------------------------------------------------------- Erreichbarkeit (Allgemein)

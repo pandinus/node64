@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -76,6 +77,39 @@ type certRow struct {
 	*certs.Cert
 	Pill   string // ok, soon, expired, none
 	CNAMEs []cnamePair
+	Main   string   // Anzeige: Hauptname (erster Name mit Punkt, keine IP)
+	More   []string // Anzeige: weitere Namen
+	IPs    []string // Anzeige: IP-Adressen
+}
+
+// splitNames teilt die Namen fuer die Anzeige: Hauptname, weitere Namen, IP-Adressen.
+func splitNames(names []string) (main string, more, ips []string) {
+	var dns []string
+	for _, n := range names {
+		if net.ParseIP(n) != nil {
+			ips = append(ips, n)
+		} else {
+			dns = append(dns, n)
+		}
+	}
+	for _, n := range dns {
+		if strings.Contains(n, ".") {
+			main = n
+			break
+		}
+	}
+	if main == "" && len(dns) > 0 {
+		main = dns[0]
+	}
+	if main == "" && len(ips) > 0 { // nur IPs
+		main, ips = ips[0], ips[1:]
+	}
+	for _, n := range dns {
+		if n != main {
+			more = append(more, n)
+		}
+	}
+	return main, more, ips
 }
 
 type certsData struct {
@@ -120,6 +154,7 @@ func (u *UI) pageCerts(w http.ResponseWriter, r *http.Request) {
 	}
 	for _, c := range list {
 		row := certRow{Cert: c, Pill: certPill(c)}
+		row.Main, row.More, row.IPs = splitNames(c.Names)
 		if c.Source == certs.SourceAlias {
 			for _, n := range c.Names {
 				from, to := certs.AliasCNAME(n, c.AliasZone, c.AliasPrefix)

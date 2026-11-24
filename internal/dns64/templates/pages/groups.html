@@ -23,26 +23,7 @@
 {{if not $d.Running}}<div class="alert alert-warning"><i class="bi bi-exclamation-triangle"></i> {{.T "dns64.not_running"}}{{if $d.Err}}<div class="small mt-1 font-monospace">{{$d.Err}}</div><div class="small mt-1">{{.T "dns64.retrying"}}</div>{{end}}</div>{{end}}
 <script type="application/json" id="dns64-data">{{$d.JS}}</script>
 <div class="row g-3" data-dns64-page="groups">
-	<div class="col-xl-4 d-flex flex-column gap-3">
-		<div class="card">
-			<div class="card-header"><i class="bi bi-plus-circle text-primary"></i> {{.T "dns64.groups.add"}}{{.Doc "dns64#gruppen"}}</div>
-			<div class="card-body">
-				<form method="post" action="/dns64/groups" class="d-flex gap-2">
-					<input type="hidden" name="_csrf" value="{{.CSRF}}">
-					<input type="text" class="form-control" name="name" placeholder="{{.T "dns64.groups.name_ph"}}" aria-label="{{.T "common.name"}}" required maxlength="40">
-					<button class="btn btn-primary text-nowrap" type="submit"><i class="bi bi-plus"></i> {{.T "dns64.groups.add_btn"}}</button>
-				</form>
-			</div>
-		</div>
-		<div class="card">
-			<div class="card-body small text-body-secondary">
-				<p class="mb-2">{{.T "dns64.groups.hint"}}</p>
-				<p class="mb-2">{{.T "dns64.groups.hint_mac"}}</p>
-				<p class="mb-0">{{.T "dns64.groups.hint_rules"}}</p>
-			</div>
-		</div>
-	</div>
-	<div class="col-xl-8 d-flex flex-column gap-3">
+	<div class="col-12 d-flex flex-column gap-3">
 		{{if $d.Tags}}<div class="card" id="tag-filter">
 			<div class="card-body py-2 d-flex flex-wrap align-items-center gap-2 small">
 				<i class="bi bi-tags text-body-secondary"></i>
@@ -221,6 +202,23 @@
 			</details>
 		</div>
 		{{else}}<div class="card"><div class="card-body small text-body-secondary">{{.T "dns64.groups.none"}}</div></div>{{end}}
+		<div class="card">
+			<div class="card-header"><i class="bi bi-plus-circle text-primary"></i> {{.T "dns64.groups.add"}}{{.Doc "dns64#gruppen"}}</div>
+			<div class="card-body">
+				<form method="post" action="/dns64/groups" class="d-flex gap-2">
+					<input type="hidden" name="_csrf" value="{{.CSRF}}">
+					<input type="text" class="form-control" name="name" placeholder="{{.T "dns64.groups.name_ph"}}" aria-label="{{.T "common.name"}}" required maxlength="40">
+					<button class="btn btn-primary text-nowrap" type="submit"><i class="bi bi-plus"></i> {{.T "dns64.groups.add_btn"}}</button>
+				</form>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-body small text-body-secondary">
+				<p class="mb-2">{{.T "dns64.groups.hint"}}</p>
+				<p class="mb-2">{{.T "dns64.groups.hint_mac"}}</p>
+				<p class="mb-0">{{.T "dns64.groups.hint_rules"}}</p>
+			</div>
+		</div>
 	</div>
 	<div class="col-12">
 		<div class="card">

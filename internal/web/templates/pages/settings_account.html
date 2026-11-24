@@ -5,7 +5,7 @@
 <!-- Einstellungen des angemeldeten Benutzers (jeder Benutzer, auch "Nur lesen"): Sprache, Zeitzone, Passwort,
      Darstellung, Zwei-Faktor-Anmeldung, Passkeys und verknuepfte SSO-Konten. Die Formulare posten wie bisher an /settings/… -->
 <div class="row g-3 align-items-start">
-	<div class="col-lg-6 d-flex flex-column gap-3">
+	<div class="col-12 d-flex flex-column gap-3">
 		<div class="card" id="user">
 			<div class="card-header"><i class="bi bi-person text-primary"></i> {{.T "settings.user"}}: {{.User.Username}}</div>
 			<div class="card-body">
@@ -51,6 +51,18 @@
 				</form>{{end}}
 			</div>
 		</div>
+		<div class="card" id="twofa">
+			<div class="card-header"><i class="bi bi-shield-lock text-success"></i> {{.T "twofa.title"}}{{$.Doc "security#zwei-faktor"}}</div>
+			<div class="card-body">
+				{{if $d.TOTP}}<p class="mb-2"><i class="bi bi-shield-check text-success"></i> {{.T "twofa.active"}}</p>
+				<a class="btn btn-outline-secondary btn-sm" href="/settings/2fa">{{.T "twofa.manage"}}</a>
+				{{else}}<p class="small text-body-secondary">{{.T "twofa.hint"}}</p>
+				<a class="btn btn-primary btn-sm" href="/settings/2fa">{{.T "twofa.setup"}}</a>{{end}}
+				{{if .Admin}}<hr class="my-2"><div class="small"><i class="bi bi-person-badge"></i> {{.T "sso.settings_hint"}} <a href="/settings/users?tab=login#login">{{.T "nav.useradmin"}}</a></div>{{end}}
+			</div>
+		</div>
+		{{template "settings_passkeys" .}}
+		{{template "settings_identities" .}}
 		<div class="card" id="appearance">
 			<div class="card-header"><i class="bi bi-palette text-info"></i> {{.T "settings.appearance"}}</div>
 			<div class="card-body">
@@ -82,19 +94,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="col-lg-6 d-flex flex-column gap-3">
-		<div class="card" id="twofa">
-			<div class="card-header"><i class="bi bi-shield-lock text-success"></i> {{.T "twofa.title"}}{{$.Doc "security#zwei-faktor"}}</div>
-			<div class="card-body">
-				{{if $d.TOTP}}<p class="mb-2"><i class="bi bi-shield-check text-success"></i> {{.T "twofa.active"}}</p>
-				<a class="btn btn-outline-secondary btn-sm" href="/settings/2fa">{{.T "twofa.manage"}}</a>
-				{{else}}<p class="small text-body-secondary">{{.T "twofa.hint"}}</p>
-				<a class="btn btn-primary btn-sm" href="/settings/2fa">{{.T "twofa.setup"}}</a>{{end}}
-				{{if .Admin}}<hr class="my-2"><div class="small"><i class="bi bi-person-badge"></i> {{.T "sso.settings_hint"}} <a href="/settings/users?tab=login#login">{{.T "nav.useradmin"}}</a></div>{{end}}
-			</div>
-		</div>
-		{{template "settings_personal_login" .}}
 	</div>
 </div>
 {{end}}

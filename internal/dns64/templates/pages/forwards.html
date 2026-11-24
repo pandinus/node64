@@ -10,45 +10,12 @@
 {{if not $d.Running}}<div class="alert alert-warning"><i class="bi bi-exclamation-triangle"></i> {{.T "dns64.not_running"}}{{if $d.Err}}<div class="small mt-1 font-monospace">{{$d.Err}}</div><div class="small mt-1">{{.T "dns64.retrying"}}</div>{{end}}</div>{{end}}
 <script type="application/json" id="dns64-data">{{$d.JS}}</script>
 <div class="row g-3" data-dns64-page="forwards">
-	<div class="col-xl-4">
-		<div class="card">
-			<div class="card-header"><i class="bi bi-plus-circle text-primary"></i> <span id="fwd-title" data-edit="{{.T "dns64.forwards.edit"}}">{{.T "dns64.forwards.add"}}</span>{{.Doc "dns64#weiterleitungen"}}</div>
-			<div class="card-body">
-				<form method="post" action="/dns64/forwards" id="fwd-form" data-base="/dns64/forwards">
-					<input type="hidden" name="_csrf" value="{{.CSRF}}">
-					<label class="form-label" for="f-domain">{{.T "dns64.forwards.domain"}}</label>
-					<input type="text" class="form-control font-monospace mb-1" id="f-domain" name="domain" data-field="domain" placeholder="firma.local" required maxlength="253">
-					<div class="form-text mb-2">{{.T "dns64.forwards.domain_hint"}}</div>
-					<label class="form-label" for="f-servers">{{.T "dns64.forwards.servers"}}</label>
-					<textarea class="form-control font-monospace mb-1" id="f-servers" name="servers" data-field="servers" rows="2" placeholder="10.8.0.1&#10;tls://dns.firma.de" required></textarea>
-					<div class="form-text mb-2">{{.T "dns64.forwards.servers_hint"}}</div>
-					<label class="form-label" for="f-comment">{{.T "dns64.records.comment"}}</label>
-					<input type="text" class="form-control mb-2" id="f-comment" name="comment" data-field="comment" maxlength="200" placeholder="{{.T "dns64.forwards.comment_ph"}}">
-					<div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="f-local" name="local_only" value="1" data-field="local"><label class="form-check-label" for="f-local">{{.T "dns64.records.local_only"}}</label></div>
-					<button class="btn btn-primary" type="submit" data-edit="{{.T "common.save"}}"><i class="bi bi-plus"></i> <span>{{.T "dns64.records.add_btn"}}</span></button>
-					<button class="btn btn-outline-secondary d-none" type="button" data-cancel>{{.T "common.cancel"}}</button>
-				</form>
-			</div>
-		</div>
-		<div class="card mt-3">
-			<div class="card-header"><i class="bi bi-arrow-left-right text-primary"></i> <span id="rw-title" data-edit="{{.T "dns64.forwards.rw_edit"}}">{{.T "dns64.forwards.rw_add"}}</span>{{.Doc "dns64#umschreiben"}}</div>
-			<div class="card-body">
-				<form method="post" action="/dns64/rewrites" id="rw-form" data-base="/dns64/rewrites">
-					<input type="hidden" name="_csrf" value="{{.CSRF}}">
-					<label class="form-label" for="w-name">{{.T "dns64.forwards.rw_name"}}</label>
-					<input type="text" class="form-control font-monospace mb-2" id="w-name" name="name" data-field="name" placeholder="nas.example.com" required maxlength="253">
-					<label class="form-label" for="w-target">{{.T "dns64.forwards.rw_target"}}</label>
-					<input type="text" class="form-control font-monospace mb-1" id="w-target" name="target" data-field="target" placeholder="nas.home.lan" required maxlength="253">
-					<div class="form-text mb-2">{{.T "dns64.forwards.rw_hint"}}</div>
-					<label class="form-label" for="w-comment">{{.T "dns64.records.comment"}}</label>
-					<input type="text" class="form-control mb-3" id="w-comment" name="comment" data-field="comment" maxlength="200">
-					<button class="btn btn-primary" type="submit" data-edit="{{.T "common.save"}}"><i class="bi bi-plus"></i> <span>{{.T "dns64.records.add_btn"}}</span></button>
-					<button class="btn btn-outline-secondary d-none" type="button" data-cancel>{{.T "common.cancel"}}</button>
-				</form>
-			</div>
-		</div>
-	</div>
-	<div class="col-xl-8">
+	<div class="col-12">
+	<ul class="nav nav-pills flex-wrap gap-1 mb-3" data-subtabs>
+		<li class="nav-item"><a class="nav-link active" href="#tab-fwd" data-pane="tab-fwd"><i class="bi bi-signpost-2"></i> {{.T "dns64.forwards.title"}}</a></li>
+		<li class="nav-item"><a class="nav-link" href="#tab-rw" data-pane="tab-rw"><i class="bi bi-arrow-left-right"></i> {{.T "dns64.forwards.rw_title"}}</a></li>
+	</ul>
+	<div class="subtab-pane d-flex flex-column gap-3" id="tab-fwd">
 		<div class="card">
 			<div class="card-header"><i class="bi bi-signpost-2 text-primary"></i> {{.T "dns64.forwards.title"}} <span class="badge text-bg-light">{{len $d.Fwds}}</span></div>
 			<form method="post">
@@ -76,7 +43,28 @@
 			</form>
 			<div class="card-footer small text-body-secondary">{{.T "dns64.forwards.order"}}</div>
 		</div>
-		<div class="card mt-3">
+		<div class="card">
+			<div class="card-header"><i class="bi bi-plus-circle text-primary"></i> <span id="fwd-title" data-edit="{{.T "dns64.forwards.edit"}}">{{.T "dns64.forwards.add"}}</span>{{.Doc "dns64#weiterleitungen"}}</div>
+			<div class="card-body">
+				<form method="post" action="/dns64/forwards" id="fwd-form" data-base="/dns64/forwards">
+					<input type="hidden" name="_csrf" value="{{.CSRF}}">
+					<label class="form-label" for="f-domain">{{.T "dns64.forwards.domain"}}</label>
+					<input type="text" class="form-control font-monospace mb-1" id="f-domain" name="domain" data-field="domain" placeholder="firma.local" required maxlength="253">
+					<div class="form-text mb-2">{{.T "dns64.forwards.domain_hint"}}</div>
+					<label class="form-label" for="f-servers">{{.T "dns64.forwards.servers"}}</label>
+					<textarea class="form-control font-monospace mb-1" id="f-servers" name="servers" data-field="servers" rows="2" placeholder="10.8.0.1&#10;tls://dns.firma.de" required></textarea>
+					<div class="form-text mb-2">{{.T "dns64.forwards.servers_hint"}}</div>
+					<label class="form-label" for="f-comment">{{.T "dns64.records.comment"}}</label>
+					<input type="text" class="form-control mb-2" id="f-comment" name="comment" data-field="comment" maxlength="200" placeholder="{{.T "dns64.forwards.comment_ph"}}">
+					<div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="f-local" name="local_only" value="1" data-field="local"><label class="form-check-label" for="f-local">{{.T "dns64.records.local_only"}}</label></div>
+					<button class="btn btn-primary" type="submit" data-edit="{{.T "common.save"}}"><i class="bi bi-plus"></i> <span>{{.T "dns64.records.add_btn"}}</span></button>
+					<button class="btn btn-outline-secondary d-none" type="button" data-cancel>{{.T "common.cancel"}}</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="subtab-pane d-flex flex-column gap-3" id="tab-rw">
+		<div class="card">
 			<div class="card-header"><i class="bi bi-arrow-left-right text-primary"></i> {{.T "dns64.forwards.rw_title"}} <span class="badge text-bg-light">{{len $d.Rws}}</span></div>
 			{{if $d.Rws}}<form method="post">
 				<input type="hidden" name="_csrf" value="{{.CSRF}}">
@@ -99,6 +87,24 @@
 				</div>
 			</form>{{else}}<div class="card-body small text-body-secondary">{{.T "dns64.forwards.rw_none"}}</div>{{end}}
 		</div>
+		<div class="card">
+			<div class="card-header"><i class="bi bi-arrow-left-right text-primary"></i> <span id="rw-title" data-edit="{{.T "dns64.forwards.rw_edit"}}">{{.T "dns64.forwards.rw_add"}}</span>{{.Doc "dns64#umschreiben"}}</div>
+			<div class="card-body">
+				<form method="post" action="/dns64/rewrites" id="rw-form" data-base="/dns64/rewrites">
+					<input type="hidden" name="_csrf" value="{{.CSRF}}">
+					<label class="form-label" for="w-name">{{.T "dns64.forwards.rw_name"}}</label>
+					<input type="text" class="form-control font-monospace mb-2" id="w-name" name="name" data-field="name" placeholder="nas.example.com" required maxlength="253">
+					<label class="form-label" for="w-target">{{.T "dns64.forwards.rw_target"}}</label>
+					<input type="text" class="form-control font-monospace mb-1" id="w-target" name="target" data-field="target" placeholder="nas.home.lan" required maxlength="253">
+					<div class="form-text mb-2">{{.T "dns64.forwards.rw_hint"}}</div>
+					<label class="form-label" for="w-comment">{{.T "dns64.records.comment"}}</label>
+					<input type="text" class="form-control mb-3" id="w-comment" name="comment" data-field="comment" maxlength="200">
+					<button class="btn btn-primary" type="submit" data-edit="{{.T "common.save"}}"><i class="bi bi-plus"></i> <span>{{.T "dns64.records.add_btn"}}</span></button>
+					<button class="btn btn-outline-secondary d-none" type="button" data-cancel>{{.T "common.cancel"}}</button>
+				</form>
+			</div>
+		</div>
+	</div>
 	</div>
 </div>
 {{end}}

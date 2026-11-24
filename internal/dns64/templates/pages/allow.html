@@ -1,0 +1,88 @@
+{{define "content"}}
+{{$d := .Data}}
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+	<h1 class="h4 mb-0"><img src="/static/img/dns64.webp" alt="{{.T "dns64.title"}}" height="26" class="me-1 align-text-bottom logo logo-light"><img src="/static/img/dns64_dark.webp" alt="{{.T "dns64.title"}}" height="26" class="me-1 align-text-bottom logo logo-dark">{{.Doc "dns64#blocklisten"}}</h1>
+	{{if $d.Running}}<span class="badge text-bg-success" title="{{.T "dns64.since" "time" (.Time $d.Started)}}"><i class="bi bi-broadcast"></i> {{.T "dns64.listening" "addr" $d.Listen}}</span>{{end}}
+	{{if $d.Running}}<div class="ms-auto d-flex align-items-center gap-2" id="dns64-pause">
+		{{if $d.Pause.Active}}<span class="badge text-bg-warning"><i class="bi bi-pause-circle"></i> {{if $d.Pause.Forever}}{{.T "dns64.pause.paused"}}{{else}}{{.T "dns64.pause.paused_until" "time" (.Time $d.Pause.Until)}}{{end}}</span>
+		<form method="post" action="/dns64/resume" class="m-0"><input type="hidden" name="_csrf" value="{{.CSRF}}"><button class="btn btn-sm btn-success" type="submit"><i class="bi bi-play-fill"></i> {{.T "dns64.pause.resume"}}</button></form>
+		{{else}}<div class="dropdown">
+			<button class="btn btn-sm btn-outline-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-pause-fill"></i> {{.T "dns64.pause.button"}}</button>
+			<form method="post" action="/dns64/pause" class="dropdown-menu dropdown-menu-end">
+				<input type="hidden" name="_csrf" value="{{.CSRF}}">
+				<button class="dropdown-item" type="submit" name="minutes" value="10"><i class="bi bi-clock"></i> {{.T "dns64.pause.ten"}}</button>
+				<button class="dropdown-item" type="submit" name="minutes" value="0"><i class="bi bi-pause-circle"></i> {{.T "dns64.pause.forever"}}</button>
+			</form>
+		</div>{{end}}
+	</div>{{end}}
+	
+</div>
+<ul class="nav nav-tabs mb-3">
+	{{range $d.Tabs}}<li class="nav-item"><a class="nav-link{{if .Active}} active{{end}}" href="{{.Path}}"><i class="bi {{.Icon}}"></i> {{$.T .TitleKey}}</a></li>{{end}}
+</ul>
+{{if not $d.Running}}<div class="alert alert-warning"><i class="bi bi-exclamation-triangle"></i> {{.T "dns64.not_running"}}{{if $d.Err}}<div class="small mt-1 font-monospace">{{$d.Err}}</div><div class="small mt-1">{{.T "dns64.retrying"}}</div>{{end}}</div>{{end}}
+<script type="application/json" id="dns64-data">{{$d.JS}}</script>
+<ul class="nav nav-pills mb-3">
+	<li class="nav-item"><a class="nav-link" href="/dns64/lists"><i class="bi bi-slash-circle"></i> {{.T "dns64.tab.lists"}}</a></li>
+	<li class="nav-item"><a class="nav-link active" href="/dns64/lists/allow"><i class="bi bi-shield-check"></i> {{.T "dns64.tab.allowlists"}}</a></li>
+</ul>
+<div class="row g-3" data-dns64-page="lists">
+	<div class="col-12 d-flex flex-column gap-3">
+		<div class="card" id="freigabe-listen">
+			<div class="card-header"><i class="bi bi-shield-check text-success"></i> {{.T "dns64.allowlists.title"}}{{.Doc "dns64#freigabe-listen"}}</div>
+			<div class="card-body small pb-0"><p class="text-body-secondary">{{.T "dns64.allowlists.hint"}}</p></div>
+			{{if $d.Cfg.AllowLst}}<form method="post" action="/dns64/allowlists">
+				<input type="hidden" name="_csrf" value="{{.CSRF}}">
+				<div class="table-responsive">
+					<table class="table table-sm align-middle mb-0 small">
+						<thead><tr><th class="ps-3">{{.T "dns64.lists.on"}}</th><th>{{.T "dns64.lists.list"}}</th><th class="text-end">{{.T "dns64.lists.domains"}}</th><th>{{.T "dns64.lists.updated"}}</th><th>{{.T "common.status"}}</th><th></th></tr></thead>
+						<tbody>
+						{{range $i, $l := $d.Cfg.AllowLst}}<tr data-aurl="{{$l.URL}}">
+							<td class="ps-3"><input type="hidden" name="aurl_{{$i}}" value="{{$l.URL}}"><input class="form-check-input" type="checkbox" name="aon_{{$i}}" value="1"{{if $l.Enabled}} checked{{end}} aria-label="{{$l.Name}}"></td>
+							<td><a href="{{$l.URL}}" target="_blank" rel="noopener noreferrer">{{$l.Name}}</a></td>
+							<td class="text-end l-rules">–</td><td class="text-nowrap l-updated">–</td>
+							<td class="l-status">{{if not $l.Enabled}}<span class="badge text-bg-light">{{$.T "dns64.js.off"}}</span>{{end}}</td>
+							<td class="text-end pe-3"><button type="submit" class="btn btn-sm btn-outline-danger py-0" formaction="/dns64/allowlists/remove" name="remove" value="{{$l.URL}}" data-confirm="{{$.T "dns64.lists.remove_confirm" "name" $l.Name}}" title="{{$.T "dns64.js.remove"}}"><i class="bi bi-trash"></i></button></td>
+						</tr>{{end}}
+						</tbody>
+					</table>
+				</div>
+				<div class="card-footer d-flex"><button class="btn btn-sm btn-primary ms-auto" type="submit"><i class="bi bi-check2"></i> {{.T "dns64.lists.apply"}}</button></div>
+			</form>{{end}}
+			<div class="card-body border-top">
+				<form method="post" action="/dns64/allowlists/add">
+					<input type="hidden" name="_csrf" value="{{.CSRF}}">
+					<textarea class="form-control form-control-sm font-monospace mb-2" name="urls" rows="2" placeholder="https://example.org/allowlist.txt" aria-label="{{.T "dns64.allowlists.title"}}" required></textarea>
+					<div class="d-flex flex-wrap align-items-start gap-2">
+						<div class="form-text mt-0 flex-grow-1">{{.T "dns64.allowlists.add_hint"}}</div>
+						<button class="btn btn-sm btn-outline-success" type="submit"><i class="bi bi-plus"></i> {{.T "dns64.lists.add_btn"}}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-header"><i class="bi bi-unlock text-success"></i> {{.T "dns64.allow.title"}}{{.Doc "dns64#freigaben"}}</div>
+			<div class="card-body small">
+				<p class="text-body-secondary">{{.T "dns64.allow.hint"}}</p>
+				{{if $d.Running}}<form id="allow-form" class="input-group mb-3">
+					<span class="input-group-text"><i class="bi bi-globe"></i></span>
+					<input type="text" class="form-control" id="allow-input" placeholder="example.com" aria-label="{{.T "dns64.allow.title"}}" autocomplete="off">
+					<button class="btn btn-success" type="submit"><i class="bi bi-check2"></i> {{.T "dns64.js.release"}}</button>
+				</form>
+				<ul class="list-group list-group-flush" id="allow-list"></ul>{{else}}<p class="mb-0">{{.T "dns64.allow.not_running"}}</p>{{end}}
+				<details class="mt-3">
+					<summary class="text-body-secondary">{{.T "dns64.allow.import"}}</summary>
+					<form method="post" action="/dns64/allowlist/import" class="mt-2">
+						<input type="hidden" name="_csrf" value="{{.CSRF}}">
+						<textarea class="form-control font-monospace mb-2" name="domains" rows="4" placeholder="example.com&#10;cdn.example.org" aria-label="{{.T "dns64.allow.import"}}"></textarea>
+						<div class="form-text mb-2">{{.T "dns64.allow.import_hint"}}</div>
+						<button class="btn btn-sm btn-outline-success" type="submit"><i class="bi bi-upload"></i> {{.T "dns64.allow.import_btn"}}</button>
+					</form>
+				</details>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3"><div class="toast" id="dns64-toast" role="status"><div class="toast-body"></div></div></div>
+{{end}}
+{{define "scripts"}}<script src="/static/js/dns64.js?v={{.Version}}"></script>{{end}}

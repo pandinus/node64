@@ -88,7 +88,7 @@ func (s *Server) loginMethodsOIDC(w http.ResponseWriter, r *http.Request) {
 	}
 	s.audit(r, "sso.config", in.Issuer, in.ClientID)
 	s.flash(w, r, "success", v.T("sso.saved"))
-	http.Redirect(w, r, userAdminPath+"?tab=login#login", http.StatusSeeOther)
+	http.Redirect(w, r, userAdminPath+"?tab=login#oidc", http.StatusSeeOther)
 }
 
 // loginOptions ergaenzt die Login-Seite um die weiteren Anmeldearten.
@@ -113,5 +113,5 @@ func (s *Server) loginMethodsForward(w http.ResponseWriter, r *http.Request) {
 	s.audit(r, "sso.forward", f["trusted"], "enabled="+f["enabled"])
 	v := s.view(r, "sso.title")
 	s.flash(w, r, "success", v.T("sso.saved"))
-	http.Redirect(w, r, userAdminPath+"?tab=login#login", http.StatusSeeOther)
+	http.Redirect(w, r, userAdminPath+"?tab=login#forward", http.StatusSeeOther)
 }

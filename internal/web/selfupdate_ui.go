@@ -82,7 +82,7 @@ func (s *Server) settingsUpdateCheck(w http.ResponseWriter, r *http.Request) {
 	default:
 		s.flash(w, r, "success", v.T("settings.update_none", "version", m.Version))
 	}
-	http.Redirect(w, r, "/settings#about", http.StatusSeeOther)
+	http.Redirect(w, r, "/settings/about", http.StatusSeeOther)
 }
 
 // applyLatest: Manifest holen und die Installation im Hintergrund starten (startet bei Erfolg neu). Download und
@@ -141,7 +141,7 @@ func (s *Server) settingsUpdateApply(w http.ResponseWriter, r *http.Request) {
 	default:
 		s.flash(w, r, "success", v.T("settings.upd.applying", "version", ver))
 	}
-	http.Redirect(w, r, "/settings#about", http.StatusSeeOther)
+	http.Redirect(w, r, "/settings/about", http.StatusSeeOther)
 }
 
 func (s *Server) settingsUpdateReset(w http.ResponseWriter, r *http.Request) {
@@ -156,7 +156,7 @@ func (s *Server) settingsUpdateReset(w http.ResponseWriter, r *http.Request) {
 		s.audit(r, "update.reset", "", "")
 		s.flash(w, r, "success", v.T("settings.upd.reset_done"))
 	}
-	http.Redirect(w, r, "/settings#about", http.StatusSeeOther)
+	http.Redirect(w, r, "/settings/about", http.StatusSeeOther)
 }
 
 // GET /api/update: laufende Version, Herkunft, Einstellungen, letztes Pruefergebnis.

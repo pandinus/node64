@@ -1,10 +1,7 @@
 {{define "content"}}
 {{$d := .Data}}{{$l := $d.Login}}
+<h1 class="h4 mb-3"><i class="bi bi-gear-fill text-secondary me-1"></i> {{.T "settings.title"}}</h1>
 {{template "settings_tabs" .}}
-<div class="d-flex align-items-center mb-2">
-	<h1 class="h4 mb-0"><i class="bi bi-people text-primary me-1"></i> {{.T "useradmin.title"}}{{$.Doc "security#benutzerverwaltung"}}</h1>
-</div>
-<p class="text-body-secondary small">{{.T "useradmin.intro"}}</p>
 <ul class="nav nav-pills mb-3" role="tablist" id="ua-tabs">
 	<li class="nav-item" role="presentation"><button class="nav-link{{if eq $d.Tab "users"}} active{{end}}" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab"><i class="bi bi-person"></i> {{.T "useradmin.tab_users"}} <span class="badge text-bg-secondary">{{len $d.Users}}</span></button></li>
 	<li class="nav-item" role="presentation"><button class="nav-link{{if eq $d.Tab "groups"}} active{{end}}" data-bs-toggle="tab" data-bs-target="#groups" type="button" role="tab"><i class="bi bi-diagram-3"></i> {{.T "useradmin.tab_groups"}} <span class="badge text-bg-secondary">{{len $d.Groups}}</span></button></li>
@@ -13,6 +10,7 @@
 <div class="tab-content">
 {{/* ---------------------------------------------------------------- Benutzer */}}
 <div class="tab-pane fade{{if eq $d.Tab "users"}} show active{{end}}" id="users" role="tabpanel">
+<p class="text-body-secondary small"><i class="bi bi-people"></i> {{.T "useradmin.intro"}}{{$.Doc "security#benutzerverwaltung"}}</p>
 	{{if $d.OTP}}<div class="alert alert-warning">
 		<div class="fw-semibold mb-1"><i class="bi bi-key"></i> {{.T "useradmin.otp_title" "name" $d.NewUser}}</div>
 		<div class="input-group input-group-sm mb-1" style="max-width:24rem"><input class="form-control font-monospace" value="{{$d.OTP}}" readonly id="ua-otp" aria-label="{{.T "useradmin.otp_title" "name" $d.NewUser}}"><button class="btn btn-outline-secondary btn-copy" type="button" data-copy-text="{{$d.OTP}}" title="{{.T "common.copy"}}"><i class="bi bi-clipboard"></i></button></div>
@@ -143,9 +141,15 @@
 </div>
 {{/* ---------------------------------------------------------------- Anmeldung (frueher /settings/login) */}}
 <div class="tab-pane fade{{if eq $d.Tab "login"}} show active{{end}}" id="login" role="tabpanel">
-<p class="text-body-secondary small">{{.T "sso.intro"}}</p>
+<ul class="nav nav-pills flex-wrap gap-1 mb-3" data-subtabs="nohash">
+	<li class="nav-item"><a class="nav-link active" href="#tab-2fa" data-pane="tab-2fa"><i class="bi bi-shield-lock"></i> 2FA</a></li>
+	<li class="nav-item"><a class="nav-link" href="#tab-sso" data-pane="tab-sso"><i class="bi bi-box-arrow-in-right"></i> SSO</a></li>
+	<li class="nav-item"><a class="nav-link" href="#tab-ldap" data-pane="tab-ldap"><i class="bi bi-diagram-2"></i> LDAP</a></li>
+</ul>
 <div class="row g-3">
-<div class="col-lg-6">
+<div class="col-12">
+<div class="subtab-pane" id="tab-2fa"><div class="row g-3">
+<div class="col-12">
 	<div class="card h-100" id="twofa-required">
 		<div class="card-header"><i class="bi bi-shield-lock text-success"></i> {{.T "useradmin.twofa_required"}} {{if $d.Required}}<span class="badge text-bg-success">{{.T "common.on"}}</span>{{else}}<span class="badge text-bg-secondary">{{.T "common.off"}}</span>{{end}}</div>
 		<div class="card-body">
@@ -158,7 +162,10 @@
 		</div>
 	</div>
 </div>
-<div class="col-lg-6">
+</div></div>
+<div class="subtab-pane" id="tab-sso"><div class="row g-3">
+<div class="col-12"><p class="text-body-secondary small mb-0">{{.T "sso.intro"}}</p></div>
+<div class="col-12">
 	<div class="card h-100" id="oidc">
 		<div class="card-header"><i class="bi bi-box-arrow-in-right text-primary"></i> {{.T "sso.oidc_title"}}{{$.Doc "security#sso-einrichten"}}</div>
 		<div class="card-body">
@@ -186,7 +193,8 @@
 		</div>
 	</div>
 </div>
-<div class="col-lg-6">
+{{template "oidc_groups_card" .}}
+<div class="col-12">
 	<div class="card h-100" id="forward">
 		<div class="card-header"><i class="bi bi-signpost-split text-primary"></i> {{.T "sso.fwd_title"}}{{$.Doc "security#forward-auth"}} {{if $l.Fwd.Enabled}}<span class="badge text-bg-success">{{.T "common.running"}}</span>{{else}}<span class="badge text-bg-secondary">{{.T "common.disabled"}}</span>{{end}}</div>
 		<div class="card-body">
@@ -203,10 +211,16 @@
 		</div>
 	</div>
 </div>
+</div></div>
+<div class="subtab-pane" id="tab-ldap"><div class="row g-3">
 {{template "ldap_card" .}}
+</div></div>
+</div>
 </div>
 <p class="small text-body-secondary mt-3 mb-0"><i class="bi bi-fingerprint"></i> {{.T "useradmin.personal_hint"}} <a href="/settings/account#passkeys">{{.T "nav.settings_account"}}</a></p>
 </div>
+
+
 </div>
 {{end}}
 {{define "ua_group_fields"}}{{$v := .V}}{{$g := .G}}{{$id := "new"}}{{if $g}}{{$id = $g.UID}}{{end}}

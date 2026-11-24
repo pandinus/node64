@@ -79,7 +79,7 @@
 </div>
 
 <div class="row g-3 align-items-start">
-	<div class="col-lg-6 d-flex flex-column gap-3">
+	<div class="col-12 d-flex flex-column gap-3">
 		{{with $d.Edge}}<div class="card" id="edge">
 			<div class="card-header"><i class="bi bi-signpost-split text-primary"></i> {{$.T "ports.edge_title"}}{{$.Doc "configuration#ports"}}</div>
 			<div class="card-body small">
@@ -119,7 +119,7 @@
 			</div>
 		</div>{{end}}
 	</div>
-	<div class="col-lg-6 d-flex flex-column gap-3">
+	<div class="col-12 d-flex flex-column gap-3">
 		<div class="card" id="hints">
 			<div class="card-header"><i class="bi bi-lightbulb text-warning"></i> {{.T "ports.hints_title"}}</div>
 			<div class="card-body small">

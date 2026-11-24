@@ -1,4 +1,4 @@
-{{define "settings_personal_login"}}{{/* eigene Passkeys und verknuepfte SSO-Konten (frueher auf /settings/login), fuer jeden Benutzer; .Data.Login */}}
+{{define "settings_passkeys"}}{{/* eigene Passkeys (eigene Karte), fuer jeden Benutzer; .Data.Login */}}
 {{$l := .Data.Login}}
 		<div class="card" id="passkeys">
 			<div class="card-header"><i class="bi bi-fingerprint text-primary"></i> {{.T "sso.pk_title"}}{{$.Doc "security#passkeys"}}</div>
@@ -25,6 +25,9 @@
 				{{else}}<div class="alert alert-warning small py-2 mb-0">{{.T "sso.pk_host" "host" $l.PKHost}}</div>{{end}}
 			</div>
 		</div>
+{{end}}
+{{define "settings_identities"}}{{/* verknuepfte SSO-Konten (eigene Karte, nur mit SSO) */}}
+{{$l := .Data.Login}}
 		{{if or $l.Identities $l.OIDC.Enabled}}<div class="card" id="identities">
 			<div class="card-header"><i class="bi bi-link-45deg text-primary"></i> {{.T "sso.identities"}}</div>
 			<div class="card-body">

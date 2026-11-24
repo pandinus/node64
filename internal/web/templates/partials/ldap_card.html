@@ -1,5 +1,5 @@
 {{define "ldap_card"}}{{$d := .LDAPCard}}
-<div class="col-lg-6">
+<div class="col-12">
 	<div class="card h-100" id="ldap">
 		<div class="card-header"><i class="bi bi-diagram-2 text-primary"></i> {{.T "ldap.title"}} {{if $d.Cfg.Enabled}}<span class="badge text-bg-success">{{.T "common.running"}}</span>{{else}}<span class="badge text-bg-secondary">{{.T "common.disabled"}}</span>{{end}}</div>
 		<div class="card-body">
@@ -40,7 +40,9 @@
 		</div>
 	</div>
 </div>
-<div class="col-lg-6">
+{{end}}
+{{define "oidc_groups_card"}}{{$d := .LDAPCard}}
+<div class="col-12">
 	<div class="card h-100" id="oidc-groups">
 		<div class="card-header"><i class="bi bi-people text-primary"></i> {{.T "ldap.oidc_title"}} {{if $d.OIDCJIT}}<span class="badge text-bg-success">{{.T "common.running"}}</span>{{else}}<span class="badge text-bg-secondary">{{.T "common.disabled"}}</span>{{end}}</div>
 		<div class="card-body">

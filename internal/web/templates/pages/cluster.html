@@ -5,7 +5,7 @@
 <p class="small"><i class="bi bi-lock text-success"></i> {{.T "cluster.tls_hint"}}{{$.Doc "cluster#https"}}</p>
 
 <div class="row g-3">
-<div class="col-lg-7">
+<div class="col-12">
 	<div class="card mb-3" id="members">
 		<div class="card-header"><i class="bi bi-diagram-3 text-primary"></i> {{.T "cluster.members"}}{{$.Doc "cluster#mitglieder"}}{{if $g.Members}} <span class="badge text-bg-secondary">{{len $g.Members}}</span>{{end}}</div>
 		<div class="card-body small">
@@ -39,7 +39,37 @@
 			{{end}}
 		</div>
 	</div>
-
+	<div class="card mb-3" id="add">
+		<div class="card-header"><i class="bi bi-plus-circle text-primary"></i> {{.T "cluster.add_title"}}{{$.Doc "cluster#aufnehmen"}}</div>
+		<div class="card-body small">
+			{{if $g.Code}}
+			<div class="alert alert-info py-2 mb-2">{{.T "cluster.code_intro"}}
+				<div class="fs-3 font-monospace my-1">{{slice $g.Code 0 4}}-{{slice $g.Code 4}} <button class="btn btn-outline-secondary btn-sm btn-copy align-middle" type="button" data-copy-text="{{$g.Code}}" title="{{.T "common.copy"}}"><i class="bi bi-clipboard"></i></button></div>
+				<div>{{.T "cluster.code_addr"}} <code>{{$g.SelfURL}}</code></div>
+				<div class="text-body-secondary">{{.T "cluster.code_valid"}} {{.Time $g.CodeExp}}</div></div>
+			<form method="post" action="/cluster/code"><input type="hidden" name="_csrf" value="{{.CSRF}}"><input type="hidden" name="cancel" value="1"><button class="btn btn-outline-secondary btn-sm">{{.T "common.cancel"}}</button></form>
+			{{else}}
+			<p class="text-body-secondary mb-1">{{.T "cluster.add_hint"}}</p>
+			<form method="post" action="/cluster/code"><input type="hidden" name="_csrf" value="{{.CSRF}}"><button class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i> {{.T "cluster.add"}}</button></form>
+			{{end}}
+		</div>
+	</div>
+	<div class="card mb-3" id="join">
+		<div class="card-header"><i class="bi bi-box-arrow-in-right text-primary"></i> {{.T "cluster.join_title"}}{{$.Doc "cluster#beitreten"}}</div>
+		<div class="card-body small">
+			<form method="post" action="/cluster/join">
+				<input type="hidden" name="_csrf" value="{{.CSRF}}">
+				<label class="form-label mb-0" for="g_addr">{{.T "cluster.addr"}}</label>
+				<input class="form-control form-control-sm font-monospace mb-1" id="g_addr" name="addr" placeholder="https://192.168.1.20:8080" required>
+				<label class="form-label mb-0" for="g_code">{{.T "cluster.code"}}</label>
+				<input class="form-control form-control-sm font-monospace mb-1" id="g_code" name="code" placeholder="ABCD-EFGH" autocomplete="off" required>
+				<label class="form-label mb-0" for="g_self">{{.T "cluster.self_url"}}</label>
+				<input class="form-control form-control-sm font-monospace mb-1" id="g_self" name="self_url" value="{{$g.SelfURL}}" required>
+				<div class="form-text mb-2">{{.T "cluster.self_url_hint"}}</div>
+				<button class="btn btn-primary btn-sm"><i class="bi bi-box-arrow-in-right"></i> {{.T "cluster.join"}}</button>
+			</form>
+		</div>
+	</div>
 	<div class="card mb-3" id="sync">
 		<div class="card-header"><i class="bi bi-arrow-left-right text-primary"></i> {{.T "cluster.sync_title"}}{{$.Doc "cluster#abgleich"}}</div>
 		<div class="card-body small">
@@ -101,39 +131,6 @@
 		</div>
 	</div>
 	{{end}}
-</div>
-<div class="col-lg-5">
-	<div class="card mb-3" id="add">
-		<div class="card-header"><i class="bi bi-plus-circle text-primary"></i> {{.T "cluster.add_title"}}{{$.Doc "cluster#aufnehmen"}}</div>
-		<div class="card-body small">
-			{{if $g.Code}}
-			<div class="alert alert-info py-2 mb-2">{{.T "cluster.code_intro"}}
-				<div class="fs-3 font-monospace my-1">{{slice $g.Code 0 4}}-{{slice $g.Code 4}} <button class="btn btn-outline-secondary btn-sm btn-copy align-middle" type="button" data-copy-text="{{$g.Code}}" title="{{.T "common.copy"}}"><i class="bi bi-clipboard"></i></button></div>
-				<div>{{.T "cluster.code_addr"}} <code>{{$g.SelfURL}}</code></div>
-				<div class="text-body-secondary">{{.T "cluster.code_valid"}} {{.Time $g.CodeExp}}</div></div>
-			<form method="post" action="/cluster/code"><input type="hidden" name="_csrf" value="{{.CSRF}}"><input type="hidden" name="cancel" value="1"><button class="btn btn-outline-secondary btn-sm">{{.T "common.cancel"}}</button></form>
-			{{else}}
-			<p class="text-body-secondary mb-1">{{.T "cluster.add_hint"}}</p>
-			<form method="post" action="/cluster/code"><input type="hidden" name="_csrf" value="{{.CSRF}}"><button class="btn btn-outline-primary btn-sm"><i class="bi bi-plus-lg"></i> {{.T "cluster.add"}}</button></form>
-			{{end}}
-		</div>
-	</div>
-	<div class="card mb-3" id="join">
-		<div class="card-header"><i class="bi bi-box-arrow-in-right text-primary"></i> {{.T "cluster.join_title"}}{{$.Doc "cluster#beitreten"}}</div>
-		<div class="card-body small">
-			<form method="post" action="/cluster/join">
-				<input type="hidden" name="_csrf" value="{{.CSRF}}">
-				<label class="form-label mb-0" for="g_addr">{{.T "cluster.addr"}}</label>
-				<input class="form-control form-control-sm font-monospace mb-1" id="g_addr" name="addr" placeholder="https://192.168.1.20:8080" required>
-				<label class="form-label mb-0" for="g_code">{{.T "cluster.code"}}</label>
-				<input class="form-control form-control-sm font-monospace mb-1" id="g_code" name="code" placeholder="ABCD-EFGH" autocomplete="off" required>
-				<label class="form-label mb-0" for="g_self">{{.T "cluster.self_url"}}</label>
-				<input class="form-control form-control-sm font-monospace mb-1" id="g_self" name="self_url" value="{{$g.SelfURL}}" required>
-				<div class="form-text mb-2">{{.T "cluster.self_url_hint"}}</div>
-				<button class="btn btn-primary btn-sm"><i class="bi bi-box-arrow-in-right"></i> {{.T "cluster.join"}}</button>
-			</form>
-		</div>
-	</div>
 	{{if $g.Members}}<form method="post" action="/cluster/leave" class="mb-3"><input type="hidden" name="_csrf" value="{{.CSRF}}"><button class="btn btn-outline-danger btn-sm" data-confirm="{{.T "cluster.leave_confirm"}}"><i class="bi bi-box-arrow-right"></i> {{.T "cluster.leave"}}</button></form>{{end}}
 </div>
 </div>

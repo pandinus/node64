@@ -53,7 +53,7 @@ func (m *Module) pageZoneSave(w http.ResponseWriter, r *http.Request) {
 		m.log.Info("zone added", "zone", z.Name, "by", m.g.Actor(r))
 		m.audit(r, "dns64.zone.add", z.Name, "")
 		m.g.Flash(w, r, "success", m.g.T(r, key))
-		http.Redirect(w, r, "/dns64/local?zone="+url.QueryEscape(z.Name), http.StatusSeeOther) // neue Zone gleich offen
+		http.Redirect(w, r, "/dns64/local/zones?zone="+url.QueryEscape(z.Name), http.StatusSeeOther) // neue Zone gleich offen
 		return
 	}
 	m.recordBack(w, r, err, key)
@@ -73,7 +73,7 @@ func (m *Module) pageZoneDelete(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		m.audit(r, "dns64.zone.delete", r.PathValue("id"), "")
 		m.g.Flash(w, r, "success", m.g.T(r, "dns64.zones.deleted"))
-		http.Redirect(w, r, "/dns64/local", http.StatusSeeOther)
+		http.Redirect(w, r, "/dns64/local/zones", http.StatusSeeOther)
 		return
 	}
 	m.recordBack(w, r, err, "")

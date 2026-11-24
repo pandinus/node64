@@ -418,6 +418,12 @@ func (s *Server) uaBack(w http.ResponseWriter, r *http.Request, tab, kind, text 
 	http.Redirect(w, r, userAdminPath+"?tab="+url.QueryEscape(tab)+"#"+tab, http.StatusSeeOther)
 }
 
+// uaBack2FA: wie uaBack, aber zurueck zum Unter-Reiter 2FA im Reiter Anmeldung (lokaler Build).
+func (s *Server) uaBack2FA(w http.ResponseWriter, r *http.Request, kind, text string) {
+	s.flash(w, r, kind, text)
+	http.Redirect(w, r, userAdminPath+"?tab=login#twofa-required", http.StatusSeeOther)
+}
+
 // uaErrText: Fehler der Benutzerverwaltung als Meldung (unbekannte: interner Fehler, im Log).
 func (s *Server) uaErrText(r *http.Request, err error) string {
 	switch {
@@ -584,7 +590,7 @@ func (s *Server) twoFARequiredSubmit(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, err)
 		return
 	}
-	s.uaBack(w, r, "login", "success", s.tr(r, "common.saved"))
+	s.uaBack2FA(w, r, "success", s.tr(r, "common.saved"))
 }
 
 // ---------------------------------------------------------------- API

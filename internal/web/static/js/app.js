@@ -415,3 +415,44 @@
 		});
 	}
 })();
+
+// Unter-Reiter auf einer Seite (lokaler Build): <ul data-subtabs> mit <a data-pane="id">, Bereiche .subtab-pane.
+// Ohne JavaScript bleiben alle Bereiche sichtbar. Der Anker in der Adresse (#tab-… oder eine Karte darin, z. B. #ipv6)
+// waehlt den Reiter, damit Weiterleitungen nach dem Speichern wieder am richtigen Reiter landen.
+(function () {
+	function init() {
+		document.querySelectorAll("[data-subtabs]").forEach(function (nav) {
+			var links = Array.prototype.slice.call(nav.querySelectorAll("[data-pane]"));
+			if (!links.length) { return; }
+			var show = function (id, remember) {
+				links.forEach(function (a) {
+					var on = a.getAttribute("data-pane") === id;
+					a.classList.toggle("active", on);
+					if (on) { a.setAttribute("aria-current", "page"); } else { a.removeAttribute("aria-current"); }
+					var p = document.getElementById(a.getAttribute("data-pane"));
+					if (p) { p.classList.toggle("d-none", !on); }
+				});
+				if (remember && nav.getAttribute("data-subtabs") !== "nohash") { history.replaceState(null, "", "#" + id); }
+			};
+			var paneOf = function (node) {
+				var p = node && node.closest ? node.closest(".subtab-pane") : null;
+				return p && links.some(function (a) { return a.getAttribute("data-pane") === p.id; }) ? p.id : "";
+			};
+			links.forEach(function (a) {
+				a.addEventListener("click", function (e) { e.preventDefault(); show(a.getAttribute("data-pane"), true); });
+			});
+			// "Bearbeiten" fuellt ein Formular, das in einem anderen Reiter liegen kann: diesen zuerst zeigen
+			document.addEventListener("click", function (e) {
+				var b = e.target.closest ? e.target.closest("[data-edit-form]") : null;
+				var id = b ? paneOf(document.getElementById(b.getAttribute("data-edit-form"))) : "";
+				if (id) { show(id, true); }
+			}, true);
+			var hash = decodeURIComponent(location.hash.slice(1));
+			var target = hash ? document.getElementById(hash) : null;
+			var start = (target && (target.classList.contains("subtab-pane") ? target.id : paneOf(target))) || links[0].getAttribute("data-pane");
+			show(start, false);
+			if (target && !target.classList.contains("subtab-pane")) { target.scrollIntoView(); }
+		});
+	}
+	if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", init); } else { init(); }
+})();

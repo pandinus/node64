@@ -3,7 +3,7 @@
 {{$a := $d.A}}
 <h1 class="h4 mb-3"><i class="bi bi-shield-lock text-primary"></i> {{if $d.New}}{{.T "certs.dns.new"}}{{else}}{{$a.Name}}{{end}}{{$.Doc "certificates#dns-anbieter"}}</h1>
 <div class="row g-3">
-	<div class="col-xl-7">
+	<div class="col-12">
 		<form method="post" action="{{if $d.New}}/certificates/dns-accounts{{else}}/certificates/dns-accounts/{{$a.ID}}/edit{{end}}" class="card">
 			<input type="hidden" name="_csrf" value="{{.CSRF}}">
 			<div class="card-body small">

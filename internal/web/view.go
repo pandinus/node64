@@ -384,6 +384,7 @@ func (s *Server) nav(r *http.Request) []NavItem {
 		NavItem{Key: "nav.settings_ports", Path: "/settings/ports", Icon: "bi-ethernet", Available: true, Enabled: true, Sub: true},
 		NavItem{Key: "nav.settings_data", Path: "/settings/data", Icon: "bi-database", Available: true, Enabled: true, Sub: true},
 		NavItem{Key: "nav.useradmin", Path: userAdminPath, Icon: "bi-people", Available: true, Enabled: true, Sub: true, Hidden: !s.isAdmin(r)},
+		NavItem{Key: "nav.settings_about", Path: "/settings/about", Icon: "bi-info-circle", Available: true, Enabled: true, Sub: true},
 		NavItem{Key: "nav.audit", Path: "/audit", Icon: "bi-journal-text", Available: true, Enabled: true},
 		NavItem{Key: "nav.logs", Path: "/logs", Icon: "bi-terminal", Available: true, Enabled: true},
 		NavItem{Key: "nav.api", Path: "/api/docs", Icon: "bi-code-slash", Available: true, Enabled: true},
